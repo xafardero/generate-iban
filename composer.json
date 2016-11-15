@@ -1,0 +1,22 @@
+{
+    "name": "xafardero/generate-iban",
+    "description": "Generate the IBAN letter with a CCC",
+    "type": "library",
+    "require": {
+        "php": ">=5.5.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^5.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "IbanGenerator\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "xaf",
+            "email": "xavier.mabras@protonmail.ch"
+        }
+    ]
+}
