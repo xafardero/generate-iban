@@ -9,23 +9,23 @@ namespace IbanGenerator;
  *
  * @link
  */
-class Iban
+class Iban implements IbanInterface
 {
     /**
-     * Iban validation.
+     * Generate an Iban code
      *
      * @param string $paisCode
-     * @param mixed $control
+     * @param string $ccc
      *
-     * @return bool
+     * @return string
      */
     public function generate($countryCode, $ccc)
     {
 
         $number = $ccc 
-                   . $this->code(substr($countryCode, 0, 1))
-                   . $this->code(substr($countryCode, 1, 1))
-                   . '00';
+                . $this->code(substr($countryCode, 0, 1))
+                . $this->code(substr($countryCode, 1, 1))
+                . '00';
 
         $checksum =  98 - bcmod($number, '97');
 
