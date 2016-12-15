@@ -3,7 +3,7 @@
 namespace IbanGenerator;
 
 /**
- * Class Iban
+ * Class Iban.
  *
  * Description
  *
@@ -12,7 +12,7 @@ namespace IbanGenerator;
 class Iban implements IbanInterface
 {
     /**
-     * Generate an Iban code
+     * Generate an Iban code.
      *
      * @param string $paisCode
      * @param string $ccc
@@ -21,19 +21,18 @@ class Iban implements IbanInterface
      */
     public function generate($countryCode, $ccc)
     {
+        $number = $ccc
+                .$this->code(substr($countryCode, 0, 1))
+                .$this->code(substr($countryCode, 1, 1))
+                .'00';
 
-        $number = $ccc 
-                . $this->code(substr($countryCode, 0, 1))
-                . $this->code(substr($countryCode, 1, 1))
-                . '00';
-
-        $checksum =  98 - bcmod($number, '97');
+        $checksum = 98 - bcmod($number, '97');
 
         if (strlen($checksum) === 1) {
-            $checksum = '0' . $checksum;
+            $checksum = '0'.$checksum;
         }
 
-        return $countryCode . $checksum;
+        return $countryCode.$checksum;
     }
 
     private function code($letter)
@@ -64,7 +63,7 @@ class Iban implements IbanInterface
             'W' => '32',
             'X' => '33',
             'Y' => '34',
-            'Z' => '35' 
+            'Z' => '35',
         ];
 
         return $tabla[$letter];
