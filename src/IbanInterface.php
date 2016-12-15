@@ -3,7 +3,7 @@
 namespace IbanGenerator;
 
 /**
- * Class Iban
+ * Class Iban.
  *
  * Description
  *
@@ -12,7 +12,7 @@ namespace IbanGenerator;
 interface IbanInterface
 {
     /**
-     * Generate an Iban code
+     * Generate an Iban code.
      *
      * @param string $paisCode
      * @param string $ccc

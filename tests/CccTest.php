@@ -5,7 +5,7 @@ use IbanGenerator\Iban;
 /**
  * Ccc validator test.
  *
- * @link 
+ * @link
  *
  * Pattern:
  * EEEE OOOO DC CCCCCCCCCC
@@ -21,7 +21,7 @@ class IbanTest extends PHPUnit_Framework_TestCase
 
         $ibanGenerator = new Iban();
 
-        $code = $ibanGenerator->generate('ES', $entidad . $oficina . $dc  . $cuenta);
+        $code = $ibanGenerator->generate('ES', $entidad.$oficina.$dc.$cuenta);
         $this->assertEquals($code, 'ES82');
     }
 }
