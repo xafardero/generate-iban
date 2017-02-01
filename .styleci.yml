@@ -1,0 +1,10 @@
+preset: recommended
+
+enabled:
+    - concat_with_spaces
+
+disabled:
+    - concat_without_spaces
+    - unary_operator_spaces
+    - phpdoc_var_without_name
+    - phpdoc_align
