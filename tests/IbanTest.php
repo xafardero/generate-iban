@@ -58,7 +58,7 @@ class IbanTest extends TestCase
      * @param $controlDigits
      * @param $bankAccount
      */
-    public function testValidIbanFromString(
+    public function testCreateFromValidString(
         $countryCode,
         $ibanChecksum,
         $bankCode,
@@ -69,6 +69,35 @@ class IbanTest extends TestCase
         $stringIban = $countryCode . $ibanChecksum . $bankCode . $branchCode . $controlDigits . $bankAccount;
         $iban = Iban::fromString($stringIban);
         $this->assertEquals($stringIban, $iban->__toString());
+    }
+
+    /**
+     * @dataProvider validIbans
+     *
+     * @param $countryCode
+     * @param $ibanChecksum
+     * @param $bankCode
+     * @param $branchCode
+     * @param $controlDigits
+     * @param $bankAccount
+     */
+    public function testCreateFromValidBban(
+        $countryCode,
+        $ibanChecksum,
+        $bankCode,
+        $branchCode,
+        $controlDigits,
+        $bankAccount
+    ) {
+        $bban = $this->prophesizeBban(
+            $bankCode,
+            $branchCode,
+            $controlDigits,
+            $bankAccount
+        );
+
+        $iban = Iban::fromBbanAndCountry($bban, 'ES');
+        $this->assertEquals($ibanChecksum, $iban->ibanCheckDigits());
     }
 
     /**
