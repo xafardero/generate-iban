@@ -187,12 +187,12 @@ class SpainBban implements BbanInterface
         foreach ([$bankCode . $branchCode, $accountNumber] as $string) {
             $suma = 0;
             for ($i = 0, $len = strlen($string); $i < $len; $i++) {
-                $suma += $validations[$i] * substr($string, $len - $i - 1, 1);
+                $suma += $validations[$i] * $string[$len - $i - 1];
             }
             $digit = 11 - $suma % 11;
-            if ($digit == 11) {
+            if ($digit === 11) {
                 $digit = 0;
-            } elseif ($digit == 10) {
+            } elseif ($digit === 10) {
                 $digit = 1;
             }
             $dc .= $digit;

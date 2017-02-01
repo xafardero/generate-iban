@@ -67,14 +67,7 @@ class Iban
         $checkDigits = substr($iban, 2, 2);
         $bbanString = substr($iban, 4);
 
-        if (! array_key_exists($countryCode, self::$countriesSupported)) {
-            throw new InvalidArgumentException(
-                sprintf(
-                    'The country code %s is not supported',
-                    $countryCode
-                )
-            );
-        }
+        self::validateSupportedCountry($countryCode);
         $bbanClass = self::$countriesSupported[$countryCode];
 
         /**
@@ -83,6 +76,27 @@ class Iban
         $bban = $bbanClass::fromString($bbanString);
 
         return new static($countryCode, $checkDigits, $bban);
+    }
+
+    /**
+     * @param BbanInterface $bban
+     * @param string $countryCode
+     *
+     * @throws InvalidArgumentException
+     *
+     * @return static
+     */
+    public static function fromBbanAndCountry(BbanInterface $bban, $countryCode)
+    {
+        static::validateCountryCodeFormat($countryCode);
+        static::validateCountryCodeFormat($countryCode);
+        static::validateSupportedCountry($countryCode);
+
+        $checksum = self::validateChecksum($countryCode, '00', $bban);
+        $checkDigit = 98 - (int) $checksum;
+        $checkDigit = str_pad($checkDigit, 2, 0, STR_PAD_LEFT);
+
+        return new static($countryCode, $checkDigit, $bban);
     }
 
     /**
@@ -179,15 +193,48 @@ class Iban
         $checkDigits,
         BbanInterface $bban
     ) {
-        $rearranged = strval($bban) . $countryCode . $checkDigits;
+        $checksum = self::validateChecksum($countryCode, $checkDigits, $bban);
+
+        if ($checksum !== '01') {
+            throw new InvalidArgumentException('The IBAN checksum digits are not valid');
+        }
+    }
+
+    /**
+     * @param $countryCode
+     *
+     * @throws InvalidArgumentException
+     */
+    private static function validateSupportedCountry($countryCode)
+    {
+        if (!array_key_exists($countryCode, self::$countriesSupported)) {
+            throw new InvalidArgumentException(
+                sprintf(
+                    'The country code %s is not supported',
+                    $countryCode
+                )
+            );
+        }
+    }
+
+    /**
+     * @param $countryCode
+     * @param $checkDigits
+     * @param BbanInterface $bban
+     *
+     * @return string
+     */
+    private static function validateChecksum($countryCode, $checkDigits, BbanInterface $bban)
+    {
+        $rearranged = (string) $bban . $countryCode . $checkDigits;
         $digitsList = str_split($rearranged);
 
         $digitsList = array_map(['self', 'digitToInt'], $digitsList);
         $stringToCompute = implode('', $digitsList);
 
-        if (bcmod($stringToCompute, '97') !== '1') {
-            throw new InvalidArgumentException('The IBAN checksum digits are not valid');
-        }
+        $checksum = bcmod($stringToCompute, '97');
+
+        return str_pad($checksum, 2, 0, STR_PAD_LEFT);
     }
 
     /**
@@ -198,7 +245,7 @@ class Iban
     private static function digitToInt($value)
     {
         if (is_numeric($value)) {
-            return intval($value);
+            return (int) $value;
         }
 
         return ord($value) - 55;
