@@ -37,7 +37,7 @@ class IbanTest extends TestCase
 
         $iban = new Iban($countryCode, $ibanChecksum, $bban);
 
-        $this->assertEquals($countryCode, $iban->countryCode());
+        $this->assertEquals(strtoupper($countryCode), $iban->countryCode());
         $this->assertEquals($ibanChecksum, $iban->ibanCheckDigits());
         $this->assertEquals($bankCode, $iban->bankCode());
         $this->assertEquals($branchCode, $iban->branchCode());
@@ -68,7 +68,7 @@ class IbanTest extends TestCase
     ) {
         $stringIban = $countryCode . $ibanChecksum . $bankCode . $branchCode . $controlDigits . $bankAccount;
         $iban = Iban::fromString($stringIban);
-        $this->assertEquals($stringIban, $iban->__toString());
+        $this->assertEquals(strtoupper($stringIban), $iban->__toString());
     }
 
     /**
@@ -257,7 +257,7 @@ class IbanTest extends TestCase
     public function validIbans()
     {
         return [
-            ['ES', '68', '3841', '2436', '11', '6183191503'],
+            ['es', '68', '3841', '2436', '11', '6183191503'],
             ['ES', '78', '0989', '5990', '44', '6462241825'],
         ];
     }

@@ -42,11 +42,11 @@ class SpainBban implements BbanInterface
         $checkDigits,
         $accountNumber
     ) {
-        static::validateBankCodeFormat($bankCode);
-        static::validateBranchCodeFormat($branchCode);
-        static::validateCheckDigitsFormat($checkDigits);
-        static::validateAccountNumberFormat($accountNumber);
-        static::validateControlDigit(
+        self::validateBankCodeFormat($bankCode);
+        self::validateBranchCodeFormat($branchCode);
+        self::validateCheckDigitsFormat($checkDigits);
+        self::validateAccountNumberFormat($accountNumber);
+        self::validateControlDigit(
             $bankCode,
             $branchCode,
             $checkDigits,
@@ -68,6 +68,8 @@ class SpainBban implements BbanInterface
      */
     public static function fromString($bban)
     {
+        $bban = preg_replace('/[^0-9a-zA-Z]+/', '', $bban);
+
         if (! preg_match('/^[\d]{20}$/', $bban)) {
             throw new InvalidArgumentException('Bban should be 20 numbers');
         }

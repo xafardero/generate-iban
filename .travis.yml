@@ -9,12 +9,12 @@ php:
 before_script:
     - composer self-update
     - composer install --prefer-source --no-interaction --dev
+    - wget https://scrutinizer-ci.com/ocular.phar
 
 script:
     - vendor/bin/phpunit --coverage-text --coverage-clover=coverage.clover
 
 after_script:
-    - wget https://scrutinizer-ci.com/ocular.phar
     - php ocular.phar code-coverage:upload --format=php-clover coverage.clover
 
 matrix:

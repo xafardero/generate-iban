@@ -42,9 +42,9 @@ class Iban
     public function __construct($countryCode, $checkDigits, BbanInterface $bban)
     {
         $countryCode = strtoupper($countryCode);
-        static::validateCountryCodeFormat($countryCode);
-        static::validateCheckDigitsFormat($checkDigits);
-        static::validateControlDigit($countryCode, $checkDigits, $bban);
+        self::validateCountryCodeFormat($countryCode);
+        self::validateCheckDigitsFormat($checkDigits);
+        self::validateControlDigit($countryCode, $checkDigits, $bban);
         $this->countryCode = $countryCode;
         $this->checkDigits = $checkDigits;
         $this->bban = $bban;
@@ -59,13 +59,15 @@ class Iban
      */
     public static function fromString($iban)
     {
-        if (! preg_match('/^[0-9A-Z]{16,34}$/', $iban)) {
+        $iban = preg_replace('/[^0-9a-zA-Z]+/', '', $iban);
+
+        if (! preg_match('/^[0-9a-zA-Z]{16,34}$/', $iban)) {
             throw new InvalidArgumentException('Iban should be between 16 and 34 characters');
         }
 
-        $countryCode = substr($iban, 0, 2);
-        $checkDigits = substr($iban, 2, 2);
-        $bbanString = substr($iban, 4);
+        $countryCode = strtoupper(substr($iban, 0, 2));
+        $checkDigits = strtoupper(substr($iban, 2, 2));
+        $bbanString = strtoupper(substr($iban, 4));
 
         self::validateSupportedCountry($countryCode);
         $bbanClass = self::$countriesSupported[$countryCode];
@@ -88,9 +90,9 @@ class Iban
      */
     public static function fromBbanAndCountry(BbanInterface $bban, $countryCode)
     {
-        static::validateCountryCodeFormat($countryCode);
-        static::validateCountryCodeFormat($countryCode);
-        static::validateSupportedCountry($countryCode);
+        self::validateCountryCodeFormat($countryCode);
+        self::validateCountryCodeFormat($countryCode);
+        self::validateSupportedCountry($countryCode);
 
         $checksum = self::validateChecksum($countryCode, '00', $bban);
         $checkDigit = 98 - (int) $checksum;
