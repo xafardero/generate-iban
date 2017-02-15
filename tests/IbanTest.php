@@ -273,6 +273,18 @@ class IbanTest extends TestCase
     }
 
     /**
+     * @return array
+     */
+    public function notSupportedIbansWithWrongLength()
+    {
+        return [
+            ['ES', '78', '2', '5990', '44', '3'],
+            ['ES', '78', '2', '5990', '34', '3'],
+            ['ES', '0', '0', '0', '0', '0'],
+        ];
+    }
+
+    /**
      * @param $bankCode
      * @param $branchCode
      * @param $controlDigits
@@ -298,5 +310,28 @@ class IbanTest extends TestCase
             ->willReturn($bankCode . $branchCode . $controlDigits . $bankAccount);
 
         return $bban->reveal();
+    }
+    /**
+     * @dataProvider notSupportedIbansWithWrongLength
+     *
+     * @expectedException InvalidArgumentException
+     *
+     * @param $countryCode
+     * @param $ibanChecksum
+     * @param $bankCode
+     * @param $branchCode
+     * @param $controlDigits
+     * @param $bankAccount
+     */
+    public function testInvalidIbanWithInvalidArgumentException(
+        $countryCode,
+        $ibanChecksum,
+        $bankCode,
+        $branchCode,
+        $controlDigits,
+        $bankAccount
+    ) {
+        $stringIban = $countryCode . $ibanChecksum . $bankCode . $branchCode . $controlDigits . $bankAccount;
+        Iban::fromString($stringIban);
     }
 }
