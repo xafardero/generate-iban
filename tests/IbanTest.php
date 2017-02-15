@@ -311,6 +311,7 @@ class IbanTest extends TestCase
 
         return $bban->reveal();
     }
+
     /**
      * @dataProvider notSupportedIbansWithWrongLength
      *
