@@ -79,7 +79,7 @@ class AndorraBban implements BbanInterface
      */
     public function branchCode()
     {
-        return $this->bankCode;
+        return $this->branchCode;
     }
 
     /**
