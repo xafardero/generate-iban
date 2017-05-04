@@ -2,14 +2,13 @@
 
 namespace IbanGenerator;
 
-use IbanGenerator\Bban\BbanInterface;
-use IbanGenerator\Bban\SpainBban;
+use IbanGenerator\Bban;
 use InvalidArgumentException;
 
 class Iban
 {
     /**
-     * @var BbanInterface
+     * @var Bban\BbanInterface
      */
     private $bban;
 
@@ -27,7 +26,8 @@ class Iban
      * @var array
      */
     private static $countriesSupported = [
-        'ES' => SpainBban::class,
+        'ES' => Bban\SpainBban::class,
+        'AD' => Bban\AndorraBban::class,
     ];
 
     /**
@@ -35,11 +35,11 @@ class Iban
      *
      * @param string $countryCode
      * @param string $checkDigits
-     * @param BbanInterface $bban
+     * @param Bban\BbanInterface $bban
      *
      * @throws InvalidArgumentException
      */
-    public function __construct($countryCode, $checkDigits, BbanInterface $bban)
+    public function __construct($countryCode, $checkDigits, Bban\BbanInterface $bban)
     {
         $countryCode = strtoupper($countryCode);
         self::validateCountryCodeFormat($countryCode);
@@ -73,7 +73,7 @@ class Iban
         $bbanClass = self::$countriesSupported[$countryCode];
 
         /**
-         * @var BbanInterface
+         * @var Bban\BbanInterface
          */
         $bban = $bbanClass::fromString($bbanString);
 
@@ -81,14 +81,14 @@ class Iban
     }
 
     /**
-     * @param BbanInterface $bban
+     * @param Bban\BbanInterface $bban
      * @param string $countryCode
      *
      * @throws InvalidArgumentException
      *
      * @return static
      */
-    public static function fromBbanAndCountry(BbanInterface $bban, $countryCode)
+    public static function fromBbanAndCountry(Bban\BbanInterface $bban, $countryCode)
     {
         self::validateCountryCodeFormat($countryCode);
         self::validateCountryCodeFormat($countryCode);
@@ -186,14 +186,14 @@ class Iban
     /**
      * @param string $countryCode
      * @param string $checkDigits
-     * @param BbanInterface $bban
+     * @param Bban\BbanInterface $bban
      *
      * @throws InvalidArgumentException
      */
     private static function validateControlDigit(
         $countryCode,
         $checkDigits,
-        BbanInterface $bban
+        Bban\BbanInterface $bban
     ) {
         $checksum = self::validateChecksum($countryCode, $checkDigits, $bban);
 
@@ -222,11 +222,11 @@ class Iban
     /**
      * @param $countryCode
      * @param $checkDigits
-     * @param BbanInterface $bban
+     * @param Bban\BbanInterface $bban
      *
      * @return string
      */
-    private static function validateChecksum($countryCode, $checkDigits, BbanInterface $bban)
+    private static function validateChecksum($countryCode, $checkDigits, Bban\BbanInterface $bban)
     {
         $rearranged = (string) $bban . $countryCode . $checkDigits;
         $digitsList = str_split($rearranged);
