@@ -27,8 +27,6 @@ PHP is required to be compiled with "--enable-bcmath" for some arbitrary precisi
 $ git clone git@github.com:xafardero/generate-iban.git
 ```
 
-Autoloading is PSR-0 friendly.
-
 ### Via [Packagist](https://packagist.org/packages/xafardero/generate-iban) & [Composer](https://getcomposer.org/doc/00-intro.md)
 
 Require the latest version of `xafardero/generate-iban` with Composer
