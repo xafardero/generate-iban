@@ -1,5 +1,4 @@
 <?php
-
 namespace IbanGenerator;
 
 use IbanGenerator\Bban;
@@ -28,6 +27,7 @@ class Iban
     private static $countriesSupported = [
         'ES' => Bban\SpainBban::class,
         'AD' => Bban\AndorraBban::class,
+        'DE' => Bban\GermanBban::class,
     ];
 
     /**
@@ -76,7 +76,7 @@ class Iban
          * @var Bban\BbanInterface
          */
         $bban = $bbanClass::fromString($bbanString);
-
+//var_dump($bban instanceof Bban\BbanInterface);die;
         return new static($countryCode, $checkDigits, $bban);
     }
 
@@ -90,6 +90,7 @@ class Iban
      */
     public static function fromBbanAndCountry(Bban\BbanInterface $bban, $countryCode)
     {
+        $countryCode = strtoupper($countryCode);
         self::validateCountryCodeFormat($countryCode);
         self::validateCountryCodeFormat($countryCode);
         self::validateSupportedCountry($countryCode);
