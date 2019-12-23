@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace IbanGenerator\Tests;
 
 use IbanGenerator\Bban\BbanInterface;
@@ -10,24 +12,15 @@ use Prophecy\Prophecy\ObjectProphecy;
 
 class IbanTest extends TestCase
 {
-    /**
-     * @dataProvider validIbans
-     *
-     * @param $countryCode
-     * @param $ibanChecksum
-     * @param $bankCode
-     * @param $branchCode
-     * @param $controlDigits
-     * @param $bankAccount
-     */
+    /** @dataProvider validIbans */
     public function testValidIban(
-        $countryCode,
-        $ibanChecksum,
-        $bankCode,
-        $branchCode,
-        $controlDigits,
-        $bankAccount
-    ) {
+        string $countryCode,
+        string $ibanChecksum,
+        string $bankCode,
+        string $branchCode,
+        string $controlDigits,
+        string $bankAccount
+    ): void {
         $bban = $this->prophesizeBban(
             $bankCode,
             $branchCode,
@@ -48,47 +41,29 @@ class IbanTest extends TestCase
         $this->assertEquals($bankAccount, $iban->accountNumber());
     }
 
-    /**
-     * @dataProvider validIbans
-     *
-     * @param $countryCode
-     * @param $ibanChecksum
-     * @param $bankCode
-     * @param $branchCode
-     * @param $controlDigits
-     * @param $bankAccount
-     */
+    /** @dataProvider validIbans */
     public function testCreateFromValidString(
-        $countryCode,
-        $ibanChecksum,
-        $bankCode,
-        $branchCode,
-        $controlDigits,
-        $bankAccount
-    ) {
+        string $countryCode,
+        string $ibanChecksum,
+        string $bankCode,
+        string $branchCode,
+        string $controlDigits,
+        string $bankAccount
+    ): void {
         $stringIban = $countryCode . $ibanChecksum . $bankCode . $branchCode . $controlDigits . $bankAccount;
         $iban = Iban::fromString($stringIban);
         $this->assertEquals(strtoupper($stringIban), $iban->__toString());
     }
 
-    /**
-     * @dataProvider validIbans
-     *
-     * @param $countryCode
-     * @param $ibanChecksum
-     * @param $bankCode
-     * @param $branchCode
-     * @param $controlDigits
-     * @param $bankAccount
-     */
+    /** @dataProvider validIbans */
     public function testCreateFromValidBban(
-        $countryCode,
-        $ibanChecksum,
-        $bankCode,
-        $branchCode,
-        $controlDigits,
-        $bankAccount
-    ) {
+        string $countryCode,
+        string $ibanChecksum,
+        string $bankCode,
+        string $branchCode,
+        string $controlDigits,
+        string $bankAccount
+    ): void {
         $bban = $this->prophesizeBban(
             $bankCode,
             $branchCode,
@@ -96,54 +71,36 @@ class IbanTest extends TestCase
             $bankAccount
         );
 
-        $iban = Iban::fromBbanAndCountry($bban, 'ES');
+        $iban = Iban::fromBbanAndCountry($bban, $countryCode);
         $this->assertEquals($ibanChecksum, $iban->ibanCheckDigits());
     }
 
-    /**
-     * @dataProvider notSupportedIbans
-     *
-     * @expectedException InvalidArgumentException
-     *
-     * @param $countryCode
-     * @param $ibanChecksum
-     * @param $bankCode
-     * @param $branchCode
-     * @param $controlDigits
-     * @param $bankAccount
-     */
+    /** @dataProvider notSupportedIbans */
     public function testValidIbanWithNotSupportedCodeThrowsException(
-        $countryCode,
-        $ibanChecksum,
-        $bankCode,
-        $branchCode,
-        $controlDigits,
-        $bankAccount
-    ) {
+        string $countryCode,
+        string $ibanChecksum,
+        string $bankCode,
+        string $branchCode,
+        string $controlDigits,
+        string $bankAccount
+    ): void {
+        $this->expectException(InvalidArgumentException::class);
+
         $stringIban = $countryCode . $ibanChecksum . $bankCode . $branchCode . $controlDigits . $bankAccount;
         Iban::fromString($stringIban);
     }
 
-    /**
-     * @dataProvider invalidCountryCodes
-     *
-     * @expectedException InvalidArgumentException
-     *
-     * @param $countryCode
-     * @param $ibanChecksum
-     * @param $bankCode
-     * @param $branchCode
-     * @param $controlDigits
-     * @param $bankAccount
-     */
+    /** @dataProvider invalidCountryCodes */
     public function testInvalidCountryCodeThrowsException(
-        $countryCode,
-        $ibanChecksum,
-        $bankCode,
-        $branchCode,
-        $controlDigits,
-        $bankAccount
-    ) {
+        string $countryCode,
+        string $ibanChecksum,
+        string $bankCode,
+        string $branchCode,
+        string $controlDigits,
+        string $bankAccount
+    ): void {
+        $this->expectException(InvalidArgumentException::class);
+
         $bban = $this->prophesizeBban(
             $bankCode,
             $branchCode,
@@ -154,26 +111,17 @@ class IbanTest extends TestCase
         new Iban($countryCode, $ibanChecksum, $bban);
     }
 
-    /**
-     * @dataProvider invalidControlDigitFormat
-     *
-     * @expectedException InvalidArgumentException
-     *
-     * @param $countryCode
-     * @param $ibanChecksum
-     * @param $bankCode
-     * @param $branchCode
-     * @param $controlDigits
-     * @param $bankAccount
-     */
+    /** @dataProvider invalidControlDigitFormat */
     public function testInvalidControlDigitFormatThrowsException(
-        $countryCode,
-        $ibanChecksum,
-        $bankCode,
-        $branchCode,
-        $controlDigits,
-        $bankAccount
-    ) {
+        string $countryCode,
+        string $ibanChecksum,
+        string $bankCode,
+        string $branchCode,
+        string $controlDigits,
+        string $bankAccount
+    ): void {
+        $this->expectException(InvalidArgumentException::class);
+
         $bban = $this->prophesizeBban(
             $bankCode,
             $branchCode,
@@ -184,26 +132,17 @@ class IbanTest extends TestCase
         new Iban($countryCode, $ibanChecksum, $bban);
     }
 
-    /**
-     * @dataProvider invalidChecksum
-     *
-     * @expectedException InvalidArgumentException
-     *
-     * @param $countryCode
-     * @param $ibanChecksum
-     * @param $bankCode
-     * @param $branchCode
-     * @param $controlDigits
-     * @param $bankAccount
-     */
+    /** @dataProvider invalidChecksum */
     public function testInvalidChecksumThrowsException(
-        $countryCode,
-        $ibanChecksum,
-        $bankCode,
-        $branchCode,
-        $controlDigits,
-        $bankAccount
-    ) {
+        string $countryCode,
+        string $ibanChecksum,
+        string $bankCode,
+        string $branchCode,
+        string $controlDigits,
+        string $bankAccount
+    ): void {
+        $this->expectException(InvalidArgumentException::class);
+
         $bban = $this->prophesizeBban(
             $bankCode,
             $branchCode,
@@ -214,10 +153,7 @@ class IbanTest extends TestCase
         new Iban($countryCode, $ibanChecksum, $bban);
     }
 
-    /**
-     * @return array
-     */
-    public function invalidCountryCodes()
+    public function invalidCountryCodes(): array
     {
         return [
             ['', '68', '3841', '2436', '11', '6183191503'],
@@ -227,10 +163,7 @@ class IbanTest extends TestCase
         ];
     }
 
-    /**
-     * @return array
-     */
-    public function invalidControlDigitFormat()
+    public function invalidControlDigitFormat(): array
     {
         return [
             ['ES', '', '3841', '2436', '11', '6183191503'],
@@ -240,10 +173,7 @@ class IbanTest extends TestCase
         ];
     }
 
-    /**
-     * @return array
-     */
-    public function invalidChecksum()
+    public function invalidChecksum(): array
     {
         return [
             ['ES', '00', '3841', '2436', '11', '6183191503'],
@@ -251,13 +181,10 @@ class IbanTest extends TestCase
         ];
     }
 
-    /**
-     * @return array
-     */
-    public function validIbans()
+    public function validIbans(): array
     {
         return [
-            ['es', '68', '3841', '2436', '11', '6183191503'],
+            ['ES', '68', '3841', '2436', '11', '6183191503'],
             ['ES', '78', '0989', '5990', '44', '6462241825'],
             ['ES', '72', '0081', '0052', '00', '0004400044'],
             ['ES', '31', '0049', '1806', '95', '2811869099'],
@@ -272,20 +199,14 @@ class IbanTest extends TestCase
         ];
     }
 
-    /**
-     * @return array
-     */
-    public function notSupportedIbans()
+    public function notSupportedIbans(): array
     {
         return [
             ['GB', '82', 'WEST', '12', '', '345698765432'],
         ];
     }
 
-    /**
-     * @return array
-     */
-    public function notSupportedIbansWithWrongLength()
+    public function notSupportedIbansWithWrongLength(): array
     {
         return [
             ['ES', '78', '2', '5990', '44', '3'],
@@ -294,24 +215,14 @@ class IbanTest extends TestCase
         ];
     }
 
-    /**
-     * @param $bankCode
-     * @param $branchCode
-     * @param $controlDigits
-     * @param $bankAccount
-     *
-     * @return BbanInterface
-     */
     private function prophesizeBban(
-        $bankCode,
-        $branchCode,
-        $controlDigits,
-        $bankAccount
-    ) {
-        /**
-         * @var ObjectProphecy|BbanInterface $bban
-         */
-        $bban = $this->prophesize('IbanGenerator\Bban\BbanInterface');
+        string $bankCode,
+        string $branchCode,
+        string $controlDigits,
+        string $bankAccount
+    ): BbanInterface {
+        /** @var ObjectProphecy|BbanInterface $bban */
+        $bban = $this->prophesize(BbanInterface::class);
         $bban->bankCode()->willReturn($bankCode);
         $bban->branchCode()->willReturn($branchCode);
         $bban->checkDigits()->willReturn($controlDigits);
@@ -322,26 +233,17 @@ class IbanTest extends TestCase
         return $bban->reveal();
     }
 
-    /**
-     * @dataProvider notSupportedIbansWithWrongLength
-     *
-     * @expectedException InvalidArgumentException
-     *
-     * @param $countryCode
-     * @param $ibanChecksum
-     * @param $bankCode
-     * @param $branchCode
-     * @param $controlDigits
-     * @param $bankAccount
-     */
+    /** @dataProvider notSupportedIbansWithWrongLength */
     public function testInvalidIbanWithInvalidArgumentException(
-        $countryCode,
-        $ibanChecksum,
-        $bankCode,
-        $branchCode,
-        $controlDigits,
-        $bankAccount
-    ) {
+        string $countryCode,
+        string $ibanChecksum,
+        string $bankCode,
+        string $branchCode,
+        string $controlDigits,
+        string $bankAccount
+    ): void {
+        $this->expectException(InvalidArgumentException::class);
+
         $stringIban = $countryCode . $ibanChecksum . $bankCode . $branchCode . $controlDigits . $bankAccount;
         Iban::fromString($stringIban);
     }

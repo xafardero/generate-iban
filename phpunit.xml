@@ -9,10 +9,9 @@
          convertWarningsToExceptions="true"
          processIsolation="false"
          stopOnFailure="false"
-         syntaxCheck="false"
          bootstrap="vendor/autoload.php">
     <testsuites>
-        <testsuite name="Demo Test Suite">
+        <testsuite name="Xafardero IBAN Test Suite">
             <directory suffix=".php">./tests/</directory>
         </testsuite>
     </testsuites>
