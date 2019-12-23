@@ -1,42 +1,23 @@
 <?php
 
+declare(strict_types=1);
+
 namespace IbanGenerator\Bban;
 
 use InvalidArgumentException;
 
 interface BbanInterface
 {
-    /**
-     * @param string $bban
-     *
-     * @throws InvalidArgumentException
-     *
-     * @return static
-     */
-    public static function fromString($bban);
+    /** @throws InvalidArgumentException */
+    public static function fromString(string $bban): BbanInterface;
 
-    /**
-     * @return string
-     */
-    public function bankCode();
+    public function bankCode(): string;
 
-    /**
-     * @return string
-     */
-    public function branchCode();
+    public function branchCode(): string;
 
-    /**
-     * @return string
-     */
-    public function checkDigits();
+    public function checkDigits(): string;
 
-    /**
-     * @return string
-     */
-    public function accountNumber();
+    public function accountNumber(): string;
 
-    /**
-     * @return string
-     */
-    public function __toString();
+    public function __toString(): string;
 }
