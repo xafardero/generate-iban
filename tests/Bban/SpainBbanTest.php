@@ -110,7 +110,7 @@ class SpainBbanTest extends TestCase
         $this->assertEquals($branchCode, $bban->branchCode());
         $this->assertEquals($controlDigits, $bban->checkDigits());
         $this->assertEquals($bankAccount, $bban->accountNumber());
-        $this->assertEquals((string)$bban, $bbanString);
+        $this->assertEquals((string) $bban, $bbanString);
     }
 
     public function invalidBankCodes(): array

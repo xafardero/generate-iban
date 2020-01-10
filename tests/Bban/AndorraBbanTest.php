@@ -79,7 +79,7 @@ class AndorraBbanTest extends TestCase
         $this->assertEquals($bankCode, $bban->bankCode());
         $this->assertEquals($branchCode, $bban->branchCode());
         $this->assertEquals($bankAccount, $bban->accountNumber());
-        $this->assertEquals((string)$bban, $bbanString);
+        $this->assertEquals((string) $bban, $bbanString);
     }
 
     public function invalidBankCodes(): array

@@ -81,8 +81,8 @@ class Iban
         self::validateSupportedCountry($countryCode);
 
         $checksum = self::validateChecksum($countryCode, '00', $bban);
-        $checkDigit = 98 - (int)$checksum;
-        $checkDigit = str_pad((string)$checkDigit, 2, '0', STR_PAD_LEFT);
+        $checkDigit = 98 - (int) $checksum;
+        $checkDigit = str_pad((string) $checkDigit, 2, '0', STR_PAD_LEFT);
 
         return new static($countryCode, $checkDigit, $bban);
     }
@@ -185,7 +185,7 @@ class Iban
     private static function digitToInt(string $value): int
     {
         if (is_numeric($value)) {
-            return (int)$value;
+            return (int) $value;
         }
 
         return ord($value) - 55;

@@ -2,7 +2,6 @@ preset: recommended
 
 enabled:
     - concat_with_spaces
-    - cast_spaces
 
 disabled:
     - concat_without_spaces
