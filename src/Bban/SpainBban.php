@@ -8,8 +8,8 @@ use InvalidArgumentException;
 
 use function preg_match;
 use function preg_replace;
-use function substr;
 use function strlen;
+use function substr;
 
 class SpainBban implements BbanInterface
 {

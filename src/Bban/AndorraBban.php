@@ -39,7 +39,7 @@ class AndorraBban implements BbanInterface
     {
         $bban = preg_replace('/[^0-9a-zA-Z]+/', '', $bban);
 
-        if (! preg_match('/^[\d]{20}$/', $bban)) {
+        if (!preg_match('/^[\d]{20}$/', $bban)) {
             throw new InvalidArgumentException('Bban should be 20 numbers');
         }
 
@@ -78,7 +78,7 @@ class AndorraBban implements BbanInterface
     /** @throws InvalidArgumentException */
     private static function validateBankCodeFormat(string $bankCode): void
     {
-        if (! preg_match('/^[\d]{4}$/', $bankCode)) {
+        if (!preg_match('/^[\d]{4}$/', $bankCode)) {
             throw new InvalidArgumentException('Bank code should be 4 numbers');
         }
     }
@@ -86,7 +86,7 @@ class AndorraBban implements BbanInterface
     /** @throws InvalidArgumentException */
     private static function validateBranchCodeFormat(string $branchCode): void
     {
-        if (! preg_match('/^[\d]{4}$/', $branchCode)) {
+        if (!preg_match('/^[\d]{4}$/', $branchCode)) {
             throw new InvalidArgumentException('Branch code should be 4 numbers');
         }
     }
@@ -94,7 +94,7 @@ class AndorraBban implements BbanInterface
     /** @throws InvalidArgumentException */
     private static function validateAccountNumberFormat(string $accountNumber): void
     {
-        if (! preg_match('/^[\d]{12}$/', $accountNumber)) {
+        if (!preg_match('/^[\d]{12}$/', $accountNumber)) {
             throw new InvalidArgumentException('Account number should be 10 numbers');
         }
     }

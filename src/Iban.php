@@ -51,7 +51,7 @@ class Iban
     }
 
     /** @throws InvalidArgumentException */
-    public static function fromString(string $iban): Iban
+    public static function fromString(string $iban): self
     {
         $iban = preg_replace('/[^0-9a-zA-Z]+/', '', $iban);
 
@@ -75,7 +75,7 @@ class Iban
     public static function fromBbanAndCountry(
         Bban\BbanInterface $bban,
         string $countryCode
-    ): Iban {
+    ): self {
         self::validateCountryCodeFormat($countryCode);
         self::validateCountryCodeFormat($countryCode);
         self::validateSupportedCountry($countryCode);

@@ -9,7 +9,7 @@ use InvalidArgumentException;
 interface BbanInterface
 {
     /** @throws InvalidArgumentException */
-    public static function fromString(string $bban): BbanInterface;
+    public static function fromString(string $bban): self;
 
     public function bankCode(): string;
 
