@@ -32,6 +32,7 @@ class Iban
     /** @var array */
     private static $countriesSupported = [
         'AD' => Bban\AndorraBban::class,
+        'AT' => Bban\AustriaBban::class,
         'BG' => Bban\BulgariaBban::class,
         'ES' => Bban\SpainBban::class,
     ];

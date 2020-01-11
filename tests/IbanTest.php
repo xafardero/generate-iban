@@ -17,10 +17,10 @@ class IbanTest extends TestCase
         string $countryCode,
         string $ibanChecksum,
         string $bankCode,
-        ?string $branchCode,
-        ?string $controlDigits,
+        string $branchCode,
+        string $controlDigits,
         string $bankAccount,
-        ?string $accountType
+        string $accountType
     ): void {
         $bban = $this->prophesizeBban(
             $bankCode,
@@ -57,10 +57,10 @@ class IbanTest extends TestCase
         string $countryCode,
         string $ibanChecksum,
         string $bankCode,
-        ?string $branchCode,
-        ?string $controlDigits,
+        string $branchCode,
+        string $controlDigits,
         string $bankAccount,
-        ?string $accountType
+        string $accountType
     ): void {
         $bban = $this->prophesizeBban(
             $bankCode,
@@ -91,8 +91,7 @@ class IbanTest extends TestCase
     ): void {
         $this->expectException(InvalidArgumentException::class);
 
-        $bban = /** @var ObjectProphecy|BbanInterface $bban */
-        $bban = $this->prophesize(BbanInterface::class)->reveal();
+        $bban = $this->prophesizeBbanFromString($bbanString);
 
         new Iban($countryCode, $ibanChecksum, $bban);
     }
@@ -105,8 +104,7 @@ class IbanTest extends TestCase
     ): void {
         $this->expectException(InvalidArgumentException::class);
 
-        $bban = /** @var ObjectProphecy|BbanInterface $bban */
-        $bban = $this->prophesize(BbanInterface::class)->reveal();
+        $bban = $this->prophesizeBbanFromString($bbanString);
 
         new Iban($countryCode, $ibanChecksum, $bban);
     }
@@ -119,11 +117,7 @@ class IbanTest extends TestCase
     ): void {
         $this->expectException(InvalidArgumentException::class);
 
-        $bbanProphet = $this->prophesize(BbanInterface::class);
-        $bbanProphet->__toString()->willReturn($bbanString);
-
-        /** @var ObjectProphecy|BbanInterface $bban */
-        $bban = $bbanProphet->reveal();
+        $bban = $this->prophesizeBbanFromString($bbanString);
 
         new Iban($countryCode, $ibanChecksum, $bban);
     }
@@ -191,6 +185,8 @@ class IbanTest extends TestCase
             ['ES2720950264609105878176'],
             ['BG04STSA93003163575284'],
             ['BG10FINV915919VARCHEV1'],
+            ['AT342250056552296719'],
+            ['AT231947031765951149'],
         ];
     }
 
@@ -212,10 +208,10 @@ class IbanTest extends TestCase
 
     private function prophesizeBban(
         string $bankCode,
-        ?string $branchCode,
-        ?string $controlDigits,
+        string $branchCode,
+        string $controlDigits,
         string $bankAccount,
-        ?string $accountType
+        string $accountType
     ): BbanInterface {
         /** @var ObjectProphecy|BbanInterface $bban */
         $bban = $this->prophesize(BbanInterface::class);
@@ -237,5 +233,14 @@ class IbanTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
 
         Iban::fromString($stringIban);
+    }
+
+    private function prophesizeBbanFromString(string $bbanString): BbanInterface
+    {
+        /** @var ObjectProphecy|BbanInterface $bbanProphet */
+        $bbanProphet = $this->prophesize(BbanInterface::class);
+        $bbanProphet->__toString()->willReturn($bbanString);
+
+        return $bbanProphet->reveal();
     }
 }

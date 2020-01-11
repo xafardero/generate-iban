@@ -10,5 +10,6 @@ CHANGELOG for 2.0.x
  - BC Break: When a Bban doesn't support a method, return MethodNotSupportedException instead of empty string.
  - Feature: Add accountType getter for BbanInterface.
  - Feature: Add AbstractBban class which has bankCode and accoutNumber logic for most of Bbans. It also returns MethodNotSupportedException for the rest of the BbanInterface getters.
- - Feature: Add support for more countries Bban:
+ - Feature: Add support for more countries Bban's:
+    - Austria
     - Bulgaria
