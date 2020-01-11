@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace IbanGenerator;
 
 use IbanGenerator\Bban;
+use IbanGenerator\Bban\Exception\MethodNotSupportedException;
 use InvalidArgumentException;
 
 use function array_key_exists;
@@ -53,15 +54,15 @@ class Iban
     /** @throws InvalidArgumentException */
     public static function fromString(string $iban): self
     {
-        $iban = preg_replace('/[^0-9a-zA-Z]+/', '', $iban);
+        $iban = preg_replace('/[^0-9A-Z]+/', '', strtoupper($iban));
 
-        if (!preg_match('/^[0-9a-zA-Z]{16,34}$/', $iban)) {
+        if (!preg_match('/^[0-9A-Z]{16,34}$/', $iban)) {
             throw new InvalidArgumentException('Iban should be between 16 and 34 characters');
         }
 
-        $countryCode = strtoupper(substr($iban, 0, 2));
-        $checkDigits = strtoupper(substr($iban, 2, 2));
-        $bbanString = strtoupper(substr($iban, 4));
+        $countryCode = substr($iban, 0, 2);
+        $checkDigits = substr($iban, 2, 2);
+        $bbanString = substr($iban, 4);
 
         self::validateSupportedCountry($countryCode);
         $bbanClass = self::$countriesSupported[$countryCode];
@@ -76,6 +77,7 @@ class Iban
         Bban\BbanInterface $bban,
         string $countryCode
     ): self {
+        $countryCode = strtoupper($countryCode);
         self::validateCountryCodeFormat($countryCode);
         self::validateCountryCodeFormat($countryCode);
         self::validateSupportedCountry($countryCode);
@@ -102,19 +104,27 @@ class Iban
         return $this->bban->bankCode();
     }
 
+    public function accountNumber(): string
+    {
+        return $this->bban->accountNumber();
+    }
+
+    /** @throws MethodNotSupportedException */
     public function branchCode(): string
     {
         return $this->bban->branchCode();
     }
 
+    /** @throws MethodNotSupportedException */
     public function countryCheckDigits(): string
     {
         return $this->bban->checkDigits();
     }
 
-    public function accountNumber(): string
+    /** @throws MethodNotSupportedException */
+    public function accountType(): string
     {
-        return $this->bban->accountNumber();
+        return $this->bban->accountType();
     }
 
     public function __toString(): string

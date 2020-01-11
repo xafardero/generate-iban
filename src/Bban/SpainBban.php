@@ -11,16 +11,12 @@ use function preg_replace;
 use function strlen;
 use function substr;
 
-class SpainBban implements BbanInterface
+class SpainBban extends AbstractBban
 {
-    /** @var string */
-    private $bankCode;
     /** @var string */
     private $branchCode;
     /** @var string */
     private $checkDigits;
-    /** @var string */
-    private $accountNumber;
 
     /** @throws InvalidArgumentException */
     public function __construct(
@@ -63,11 +59,6 @@ class SpainBban implements BbanInterface
         return new static($bankCode, $branchCode, $checkDigits, $accountNumber);
     }
 
-    public function bankCode(): string
-    {
-        return $this->bankCode;
-    }
-
     public function branchCode(): string
     {
         return $this->branchCode;
@@ -76,11 +67,6 @@ class SpainBban implements BbanInterface
     public function checkDigits(): string
     {
         return $this->checkDigits;
-    }
-
-    public function accountNumber(): string
-    {
-        return $this->accountNumber;
     }
 
     public function __toString(): string

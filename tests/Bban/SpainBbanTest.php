@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace IbanGenerator\Tests\Bban;
 
+use Exception;
+use IbanGenerator\Bban\Exception\MethodNotSupportedException;
 use IbanGenerator\Bban\SpainBban;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
@@ -87,6 +89,13 @@ class SpainBbanTest extends TestCase
         $this->assertEquals($branchCode, $bban->branchCode());
         $this->assertEquals($controlDigits, $bban->checkDigits());
         $this->assertEquals($bankAccount, $bban->accountNumber());
+
+        try {
+            $bban->accountType();
+            $this->fail('AccountType getter should not be supported for this Bban');
+        } catch (Exception $exception) {
+            $this->assertInstanceOf(MethodNotSupportedException::class, $exception);
+        }
     }
 
     /** @dataProvider invalidCheckDigitsValidation */

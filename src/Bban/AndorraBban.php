@@ -10,14 +10,10 @@ use function preg_match;
 use function preg_replace;
 use function substr;
 
-class AndorraBban implements BbanInterface
+class AndorraBban extends AbstractBban
 {
     /** @var string */
-    private $bankCode;
-    /** @var string */
     private $branchCode;
-    /** @var string */
-    private $accountNumber;
 
     /** @throws InvalidArgumentException */
     public function __construct(
@@ -50,24 +46,9 @@ class AndorraBban implements BbanInterface
         return new static($bankCode, $branchCode, $accountNumber);
     }
 
-    public function bankCode(): string
-    {
-        return $this->bankCode;
-    }
-
     public function branchCode(): string
     {
         return $this->branchCode;
-    }
-
-    public function checkDigits(): string
-    {
-        return '';
-    }
-
-    public function accountNumber(): string
-    {
-        return $this->accountNumber;
     }
 
     public function __toString(): string
