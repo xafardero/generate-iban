@@ -8,6 +8,7 @@ use InvalidArgumentException;
 
 use function preg_match;
 use function preg_replace;
+use function strlen;
 use function substr;
 
 class BulgariaBban extends AbstractBban
@@ -40,10 +41,8 @@ class BulgariaBban extends AbstractBban
     {
         $bban = preg_replace('/[^0-9a-zA-Z]+/', '', $bban);
 
-        if (!preg_match('/^[A-Z]{4}[\d]{6}[A-Z0-9]{8}$/', $bban)) {
-            throw new InvalidArgumentException(
-                'Bban should be 4 alphabetic characters, 6 numeric characters and 8 alphanumeric characters'
-            );
+        if (strlen($bban) !== 18) {
+            throw new InvalidArgumentException('Bban should be 18 chars long');
         }
 
         $bankCode = substr($bban, 0, 4);

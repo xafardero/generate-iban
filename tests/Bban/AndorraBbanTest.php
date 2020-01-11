@@ -45,7 +45,7 @@ class AndorraBbanTest extends TestCase
         new AndorraBban($bankCode, $branchCode, $bankAccount);
     }
 
-    /** @dataProvider validSpanishBbans */
+    /** @dataProvider validAndorraBbans */
     public function testGetters(
         string $bankCode,
         string $branchCode,
@@ -82,8 +82,8 @@ class AndorraBbanTest extends TestCase
         AndorraBban::fromString($bbanString);
     }
 
-    /** @dataProvider validSpanishBbans */
-    public function testCreateFromStringWithValidAccountShouldReturnSpainBban(
+    /** @dataProvider validAndorraBbans */
+    public function testCreateFromStringWithValidAccountShouldReturnAndorraBban(
         string $bankCode,
         string $branchCode,
         string $bankAccount
@@ -126,7 +126,7 @@ class AndorraBbanTest extends TestCase
         ];
     }
 
-    public function validSpanishBbans(): array
+    public function validAndorraBbans(): array
     {
         return [
             ['0001', '2030', '200359100100'],
