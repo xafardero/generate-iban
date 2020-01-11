@@ -32,8 +32,9 @@ class Iban
     private $checkDigits;
     /** @var array */
     private static $countriesSupported = [
-        'ES' => Bban\SpainBban::class,
         'AD' => Bban\AndorraBban::class,
+        'BG' => Bban\BulgariaBban::class,
+        'ES' => Bban\SpainBban::class,
     ];
 
     /** @throws InvalidArgumentException */
