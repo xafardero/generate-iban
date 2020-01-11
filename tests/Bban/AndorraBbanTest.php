@@ -59,6 +59,7 @@ class AndorraBbanTest extends TestCase
         $this->assertEquals($bankCode, $bban->bankCode());
         $this->assertEquals($branchCode, $bban->branchCode());
         $this->assertEquals($bankAccount, $bban->accountNumber());
+
         try {
             $bban->checkDigits();
             $this->fail('CheckDigits getter should not be supported for this Bban');

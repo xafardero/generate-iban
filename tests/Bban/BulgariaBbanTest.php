@@ -67,11 +67,12 @@ class BulgariaBbanTest extends TestCase
         string $accountType,
         string $accountNumber
     ): void {
-        $bban =  new BulgariaBban($bankCode, $branchCode, $accountType, $accountNumber);
+        $bban = new BulgariaBban($bankCode, $branchCode, $accountType, $accountNumber);
         $this->assertEquals($bankCode, $bban->bankCode());
         $this->assertEquals($branchCode, $bban->branchCode());
         $this->assertEquals($accountNumber, $bban->accountNumber());
         $this->assertEquals($accountType, $bban->accountType());
+
         try {
             $bban->checkDigits();
             $this->fail('CheckDigits getter should not be supported for this Bban');

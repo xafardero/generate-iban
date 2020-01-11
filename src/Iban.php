@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace IbanGenerator;
 
-use IbanGenerator\Bban;
 use IbanGenerator\Bban\Exception\MethodNotSupportedException;
 use InvalidArgumentException;
 
