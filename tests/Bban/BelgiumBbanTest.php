@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace IbanGenerator\Tests\Bban;
 
 use Exception;
-use IbanGenerator\Bban\Exception\MethodNotSupportedException;
 use IbanGenerator\Bban\BelgiumBban;
+use IbanGenerator\Bban\Exception\MethodNotSupportedException;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
@@ -101,44 +101,44 @@ class BelgiumBbanTest extends TestCase
     public function invalidBankCodes(): array
     {
         return [
-            ['','3917149','43'],
-            ['4','3917149','43'],
-            ['9549','3917149','43'],
-            ['9J4','3917149','43'],
+            ['', '3917149', '43'],
+            ['4', '3917149', '43'],
+            ['9549', '3917149', '43'],
+            ['9J4', '3917149', '43'],
         ];
     }
 
     public function invalidBankAccounts(): array
     {
         return [
-            ['954','','43'],
-            ['954','391714','43'],
-            ['954','39171498','43'],
-            ['954','391J149','43'],
+            ['954', '', '43'],
+            ['954', '391714', '43'],
+            ['954', '39171498', '43'],
+            ['954', '391J149', '43'],
         ];
     }
 
     public function invalidCheckDigitsFormat(): array
     {
         return [
-            ['954','3917149',''],
-            ['954','3917149','4'],
-            ['954','3917149','438'],
-            ['954','3917149','4K'],
+            ['954', '3917149', ''],
+            ['954', '3917149', '4'],
+            ['954', '3917149', '438'],
+            ['954', '3917149', '4K'],
         ];
     }
 
     public function invalidCheckDigitsValidation(): array
     {
         return [
-            ['954','3917149','42'],
+            ['954', '3917149', '42'],
         ];
     }
 
     public function validBelgiumBbans(): array
     {
         return [
-            ['954','3917149','43'],
+            ['954', '3917149', '43'],
         ];
     }
 

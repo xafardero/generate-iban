@@ -34,6 +34,7 @@ class Iban
         'AD' => Bban\AndorraBban::class,
         'AT' => Bban\AustriaBban::class,
         'BG' => Bban\BulgariaBban::class,
+        'BE' => Bban\BelgiumBban::class,
         'ES' => Bban\SpainBban::class,
     ];
 

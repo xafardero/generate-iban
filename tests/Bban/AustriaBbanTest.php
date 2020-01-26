@@ -22,7 +22,6 @@ class AustriaBbanTest extends TestCase
         new AustriaBban($bankCode, $bankAccount);
     }
 
-
     /** @dataProvider invalidBankAccounts */
     public function testBankAccountShouldBe11NumericDigits(
         string $bankCode,
