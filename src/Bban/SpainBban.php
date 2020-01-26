@@ -94,7 +94,7 @@ class SpainBban extends AbstractBban
     private static function validateCheckDigitsFormat(string $checkDigits): void
     {
         if (!preg_match('/^[\d]{2}$/', $checkDigits)) {
-            throw new InvalidArgumentException('Check digits should be 4 numbers');
+            throw new InvalidArgumentException('Check digits should be 2 numbers');
         }
     }
 
