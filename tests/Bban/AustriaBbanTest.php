@@ -5,60 +5,51 @@ declare(strict_types=1);
 namespace IbanGenerator\Tests\Bban;
 
 use Exception;
-use IbanGenerator\Bban\AndorraBban;
+use IbanGenerator\Bban\AustriaBban;
 use IbanGenerator\Bban\Exception\MethodNotSupportedException;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
-class AndorraBbanTest extends TestCase
+class AustriaBbanTest extends TestCase
 {
     /** @dataProvider invalidBankCodes */
-    public function testBankCodeShouldBe4NumericDigits(
+    public function testBankCodeShouldBe5NumericDigits(
         string $bankCode,
-        string $branchCode,
         string $bankAccount
     ): void {
         $this->expectException(InvalidArgumentException::class);
 
-        new AndorraBban($bankCode, $branchCode, $bankAccount);
-    }
-
-    /** @dataProvider invalidBranchCodes */
-    public function testBranchCodeShouldBe4NumericDigits(
-        string $bankCode,
-        string $branchCode,
-        string $bankAccount
-    ): void {
-        $this->expectException(InvalidArgumentException::class);
-
-        new AndorraBban($bankCode, $branchCode, $bankAccount);
+        new AustriaBban($bankCode, $bankAccount);
     }
 
     /** @dataProvider invalidBankAccounts */
-    public function testBankAccountShouldBe10NumericDigits(
+    public function testBankAccountShouldBe11NumericDigits(
         string $bankCode,
-        string $branchCode,
         string $bankAccount
     ): void {
         $this->expectException(InvalidArgumentException::class);
 
-        new AndorraBban($bankCode, $branchCode, $bankAccount);
+        new AustriaBban($bankCode, $bankAccount);
     }
 
-    /** @dataProvider validAndorraBbans */
+    /** @dataProvider validAustriaBbans */
     public function testGetters(
         string $bankCode,
-        string $branchCode,
         string $bankAccount
     ): void {
-        $bban = new AndorraBban(
+        $bban = new AustriaBban(
             $bankCode,
-            $branchCode,
             $bankAccount
         );
         $this->assertEquals($bankCode, $bban->bankCode());
-        $this->assertEquals($branchCode, $bban->branchCode());
         $this->assertEquals($bankAccount, $bban->accountNumber());
+
+        try {
+            $bban->branchCode();
+            $this->fail('BranchCode getter should not be supported for this Bban');
+        } catch (Exception $exception) {
+            $this->assertInstanceOf(MethodNotSupportedException::class, $exception);
+        }
 
         try {
             $bban->checkDigits();
@@ -80,19 +71,17 @@ class AndorraBbanTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
 
-        AndorraBban::fromString($bbanString);
+        AustriaBban::fromString($bbanString);
     }
 
-    /** @dataProvider validAndorraBbans */
-    public function testCreateFromStringWithValidAccountShouldReturnAndorraBban(
+    /** @dataProvider validAustriaBbans */
+    public function testCreateFromStringWithValidAccountShouldReturnAustriaBban(
         string $bankCode,
-        string $branchCode,
         string $bankAccount
     ): void {
-        $bbanString = $bankCode . $branchCode . $bankAccount;
-        $bban = AndorraBban::fromString($bbanString);
+        $bbanString = $bankCode . $bankAccount;
+        $bban = AustriaBban::fromString($bbanString);
         $this->assertEquals($bankCode, $bban->bankCode());
-        $this->assertEquals($branchCode, $bban->branchCode());
         $this->assertEquals($bankAccount, $bban->accountNumber());
         $this->assertEquals((string) $bban, $bbanString);
     }
@@ -100,46 +89,36 @@ class AndorraBbanTest extends TestCase
     public function invalidBankCodes(): array
     {
         return [
-            ['', '2030', '200359100100'],
-            ['1', '2030', '200359100100'],
-            ['13521', '2030', '200359100100'],
-            ['A445', '2030', '200359100100'],
-        ];
-    }
-
-    public function invalidBranchCodes(): array
-    {
-        return [
-            ['0001', '', '200359100100'],
-            ['0001', '5', '200359100100'],
-            ['0001', '98725', '200359100100'],
-            ['0001', '8X78', '200359100100'],
+            ['', '56552296719'],
+            ['2250', '56552296719'],
+            ['225080', '56552296719'],
+            ['225A0', '56552296719'],
         ];
     }
 
     public function invalidBankAccounts(): array
     {
         return [
-            ['0001', '2030', '21', ''],
-            ['0001', '2030', '24', '785123'],
-            ['0001', '2030', '12', '21654872324654'],
-            ['0001', '2030', '52', '875A2456J2'],
+            ['22500', ''],
+            ['22500', '5655229671'],
+            ['22500', '565522967197'],
+            ['22500', '565522J6719'],
         ];
     }
 
-    public function validAndorraBbans(): array
+    public function validAustriaBbans(): array
     {
         return [
-            ['0001', '2030', '200359100100'],
+            ['22500', '56552296719'],
         ];
     }
 
     public function invalidBankStrings(): array
     {
         return [
-            ['2085206664030008280'],
-            ['004923520724142054185'],
-            ['210004184A0200051332'],
+            ['225005655229671'],
+            ['22500565522967198'],
+            ['225005J552296719'],
         ];
     }
 }

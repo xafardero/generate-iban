@@ -1,122 +1,84 @@
 <?php
 
+declare(strict_types=1);
+
 namespace IbanGenerator\Tests\Bban;
 
+use Exception;
+use IbanGenerator\Bban\Exception\MethodNotSupportedException;
 use IbanGenerator\Bban\SpainBban;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 class SpainBbanTest extends TestCase
 {
-    /**
-     * @dataProvider invalidBankCodes
-     *
-     * @expectedException InvalidArgumentException
-     *
-     * @param string $bankCode
-     * @param string $branchCode
-     * @param string $controlDigits
-     * @param string $bankAccount
-     */
+    /** @dataProvider invalidBankCodes*/
     public function testBankCodeShouldBe4NumericDigits(
-        $bankCode,
-        $branchCode,
-        $controlDigits,
-        $bankAccount
-    ) {
+        string $bankCode,
+        string $branchCode,
+        string $controlDigits,
+        string $bankAccount
+    ): void {
+        $this->expectException(InvalidArgumentException::class);
+
         new SpainBban($bankCode, $branchCode, $controlDigits, $bankAccount);
     }
 
-    /**
-     * @dataProvider invalidBranchCodes
-     *
-     * @expectedException InvalidArgumentException
-     *
-     * @param string $bankCode
-     * @param string $branchCode
-     * @param string $controlDigits
-     * @param string $bankAccount
-     */
+    /** @dataProvider invalidBranchCodes */
     public function testBranchCodeShouldBe4NumericDigits(
-        $bankCode,
-        $branchCode,
-        $controlDigits,
-        $bankAccount
-    ) {
+        string $bankCode,
+        string $branchCode,
+        string $controlDigits,
+        string $bankAccount
+    ): void {
+        $this->expectException(InvalidArgumentException::class);
+
         new SpainBban($bankCode, $branchCode, $controlDigits, $bankAccount);
     }
 
-    /**
-     * @dataProvider invalidCheckDigitsFormat
-     *
-     * @expectedException InvalidArgumentException
-     *
-     * @param string $bankCode
-     * @param string $branchCode
-     * @param string $controlDigits
-     * @param string $bankAccount
-     */
+    /** @dataProvider invalidCheckDigitsFormat */
     public function testCheckDigitsShouldBe2NumericDigits(
-        $bankCode,
-        $branchCode,
-        $controlDigits,
-        $bankAccount
-    ) {
+        string $bankCode,
+        string $branchCode,
+        string $controlDigits,
+        string $bankAccount
+    ): void {
+        $this->expectException(InvalidArgumentException::class);
+
         new SpainBban($bankCode, $branchCode, $controlDigits, $bankAccount);
     }
 
-    /**
-     * @dataProvider invalidBankAccounts
-     *
-     * @expectedException InvalidArgumentException
-     *
-     * @param string $bankCode
-     * @param string $branchCode
-     * @param string $controlDigits
-     * @param string $bankAccount
-     */
+    /** @dataProvider invalidBankAccounts */
     public function testBankAccountShouldBe10NumericDigits(
-        $bankCode,
-        $branchCode,
-        $controlDigits,
-        $bankAccount
-    ) {
+        string $bankCode,
+        string $branchCode,
+        string $controlDigits,
+        string $bankAccount
+    ): void {
+        $this->expectException(InvalidArgumentException::class);
+
         new SpainBban($bankCode, $branchCode, $controlDigits, $bankAccount);
     }
 
-    /**
-     * @dataProvider invalidCheckDigitsValidation
-     *
-     * @expectedException InvalidArgumentException
-     *
-     * @param string $bankCode
-     * @param string $branchCode
-     * @param string $controlDigits
-     * @param string $bankAccount
-     */
+    /** @dataProvider invalidCheckDigitsValidation */
     public function testCheckDigitsShouldBeValid(
-        $bankCode,
-        $branchCode,
-        $controlDigits,
-        $bankAccount
-    ) {
+        string $bankCode,
+        string $branchCode,
+        string $controlDigits,
+        string $bankAccount
+    ): void {
+        $this->expectException(InvalidArgumentException::class);
+
         new SpainBban($bankCode, $branchCode, $controlDigits, $bankAccount);
     }
 
-    /**
-     * @dataProvider validSpanishBbans
-     *
-     * @param string $bankCode
-     * @param string $branchCode
-     * @param string $controlDigits
-     * @param string $bankAccount
-     */
+    /** @dataProvider validSpanishBbans */
     public function testGetters(
-        $bankCode,
-        $branchCode,
-        $controlDigits,
-        $bankAccount
-    ) {
+        string $bankCode,
+        string $branchCode,
+        string $controlDigits,
+        string $bankAccount
+    ): void {
         $bban = new SpainBban(
             $bankCode,
             $branchCode,
@@ -127,47 +89,40 @@ class SpainBbanTest extends TestCase
         $this->assertEquals($branchCode, $bban->branchCode());
         $this->assertEquals($controlDigits, $bban->checkDigits());
         $this->assertEquals($bankAccount, $bban->accountNumber());
+
+        try {
+            $bban->accountType();
+            $this->fail('AccountType getter should not be supported for this Bban');
+        } catch (Exception $exception) {
+            $this->assertInstanceOf(MethodNotSupportedException::class, $exception);
+        }
     }
 
-    /**
-     * @dataProvider invalidCheckDigitsValidation
-     *
-     * @expectedException InvalidArgumentException
-     *
-     * @param string $bbanString
-     */
-    public function testCreateFromStringMustHave20Digits($bbanString)
+    /** @dataProvider invalidCheckDigitsValidation */
+    public function testCreateFromStringMustHave20Digits(string $bbanString): void
     {
+        $this->expectException(InvalidArgumentException::class);
+
         SpainBban::fromString($bbanString);
     }
 
-    /**
-     * @dataProvider validSpanishBbans
-     *
-     * @param string $bankCode
-     * @param string $branchCode
-     * @param string $controlDigits
-     * @param string $bankAccount
-     */
+    /** @dataProvider validSpanishBbans */
     public function testCreateFromStringWithValidAccountShouldReturnSpainBban(
-        $bankCode,
-        $branchCode,
-        $controlDigits,
-        $bankAccount
-    ) {
+        string $bankCode,
+        string $branchCode,
+        string $controlDigits,
+        string $bankAccount
+    ): void {
         $bbanString = $bankCode . $branchCode . $controlDigits . $bankAccount;
         $bban = SpainBban::fromString($bbanString);
         $this->assertEquals($bankCode, $bban->bankCode());
         $this->assertEquals($branchCode, $bban->branchCode());
         $this->assertEquals($controlDigits, $bban->checkDigits());
         $this->assertEquals($bankAccount, $bban->accountNumber());
-        $this->assertEquals(strval($bban), $bbanString);
+        $this->assertEquals((string) $bban, $bbanString);
     }
 
-    /**
-     * @return array
-     */
-    public function invalidBankCodes()
+    public function invalidBankCodes(): array
     {
         return [
             ['', '6545', '21', '8754292156'],
@@ -177,10 +132,7 @@ class SpainBbanTest extends TestCase
         ];
     }
 
-    /**
-     * @return array
-     */
-    public function invalidBranchCodes()
+    public function invalidBranchCodes(): array
     {
         return [
             ['1232', '', '21', '8754292156'],
@@ -190,10 +142,7 @@ class SpainBbanTest extends TestCase
         ];
     }
 
-    /**
-     * @return array
-     */
-    public function invalidCheckDigitsFormat()
+    public function invalidCheckDigitsFormat(): array
     {
         return [
             ['1232', '2135', '', '8754292156'],
@@ -203,10 +152,7 @@ class SpainBbanTest extends TestCase
         ];
     }
 
-    /**
-     * @return array
-     */
-    public function invalidBankAccounts()
+    public function invalidBankAccounts(): array
     {
         return [
             ['1232', '2135', '21', ''],
@@ -216,10 +162,7 @@ class SpainBbanTest extends TestCase
         ];
     }
 
-    /**
-     * @return array
-     */
-    public function invalidCheckDigitsValidation()
+    public function invalidCheckDigitsValidation(): array
     {
         return [
             ['8936', '0405', '21', '0341590132'],
@@ -229,10 +172,7 @@ class SpainBbanTest extends TestCase
         ];
     }
 
-    /***
-     * @return array
-     */
-    public function validSpanishBbans()
+    public function validSpanishBbans(): array
     {
         return [
             ['0030', '2053', '02', '0000875271'],
@@ -242,10 +182,7 @@ class SpainBbanTest extends TestCase
         ];
     }
 
-    /***
-     * @return array
-     */
-    public function invalidBankStrings()
+    public function invalidBankStrings(): array
     {
         return [
             ['2085206664030008280'],

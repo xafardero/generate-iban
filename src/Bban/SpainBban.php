@@ -1,46 +1,29 @@
 <?php
 
+declare(strict_types=1);
+
 namespace IbanGenerator\Bban;
 
 use InvalidArgumentException;
 
-class SpainBban implements BbanInterface
+use function preg_match;
+use function preg_replace;
+use function strlen;
+use function substr;
+
+class SpainBban extends AbstractBban
 {
-    /**
-     * @var string
-     */
-    private $bankCode;
-
-    /**
-     * @var string
-     */
+    /** @var string */
     private $branchCode;
-
-    /**
-     * @var string
-     */
+    /** @var string */
     private $checkDigits;
 
-    /**
-     * @var string
-     */
-    private $accountNumber;
-
-    /**
-     * SpainBban constructor.
-     *
-     * @param string $bankCode
-     * @param string $branchCode
-     * @param string $checkDigits
-     * @param string $accountNumber
-     *
-     * @throws InvalidArgumentException
-     */
+    /** @throws InvalidArgumentException */
     public function __construct(
-        $bankCode,
-        $branchCode,
-        $checkDigits,
-        $accountNumber
+        string $bankCode,
+        string $branchCode,
+        string $checkDigits,
+        string $accountNumber
     ) {
         self::validateBankCodeFormat($bankCode);
         self::validateBranchCodeFormat($branchCode);
@@ -59,19 +42,13 @@ class SpainBban implements BbanInterface
         $this->accountNumber = $accountNumber;
     }
 
-    /**
-     * @param string $bban
-     *
-     * @throws InvalidArgumentException
-     *
-     * @return static
-     */
-    public static function fromString($bban)
+    /** @throws InvalidArgumentException */
+    public static function fromString(string $bban): BbanInterface
     {
         $bban = preg_replace('/[^0-9a-zA-Z]+/', '', $bban);
 
-        if (! preg_match('/^[\d]{20}$/', $bban)) {
-            throw new InvalidArgumentException('Bban should be 20 numbers');
+        if (strlen($bban) !== 20) {
+            throw new InvalidArgumentException('Bban should be 20 chars long');
         }
 
         $bankCode = substr($bban, 0, 4);
@@ -82,108 +59,60 @@ class SpainBban implements BbanInterface
         return new static($bankCode, $branchCode, $checkDigits, $accountNumber);
     }
 
-    /**
-     * @return string
-     */
-    public function bankCode()
-    {
-        return $this->bankCode;
-    }
-
-    /**
-     * @return string
-     */
-    public function branchCode()
+    public function branchCode(): string
     {
         return $this->branchCode;
     }
 
-    /**
-     * @return string
-     */
-    public function checkDigits()
+    public function checkDigits(): string
     {
         return $this->checkDigits;
     }
 
-    /**
-     * @return string
-     */
-    public function accountNumber()
-    {
-        return $this->accountNumber;
-    }
-
-    /**
-     * @return string
-     */
-    public function __toString()
+    public function __toString(): string
     {
         return $this->bankCode . $this->branchCode . $this->checkDigits . $this->accountNumber;
     }
 
-    /**
-     * @param $bankCode
-     *
-     * @throws InvalidArgumentException
-     */
-    private static function validateBankCodeFormat($bankCode)
+    /** @throws InvalidArgumentException */
+    private static function validateBankCodeFormat(string $bankCode): void
     {
-        if (! preg_match('/^[\d]{4}$/', $bankCode)) {
+        if (!preg_match('/^[\d]{4}$/', $bankCode)) {
             throw new InvalidArgumentException('Bank code should be 4 numbers');
         }
     }
 
-    /**
-     * @param $branchCode
-     *
-     * @throws InvalidArgumentException
-     */
-    private static function validateBranchCodeFormat($branchCode)
+    /** @throws InvalidArgumentException */
+    private static function validateBranchCodeFormat(string $branchCode): void
     {
-        if (! preg_match('/^[\d]{4}$/', $branchCode)) {
+        if (!preg_match('/^[\d]{4}$/', $branchCode)) {
             throw new InvalidArgumentException('Branch code should be 4 numbers');
         }
     }
 
-    /**
-     * @param $checkDigits
-     *
-     * @throws InvalidArgumentException
-     */
-    private static function validateCheckDigitsFormat($checkDigits)
+    /** @throws InvalidArgumentException */
+    private static function validateCheckDigitsFormat(string $checkDigits): void
     {
-        if (! preg_match('/^[\d]{2}$/', $checkDigits)) {
-            throw new InvalidArgumentException('Check digits should be 4 numbers');
+        if (!preg_match('/^[\d]{2}$/', $checkDigits)) {
+            throw new InvalidArgumentException('Check digits should be 2 numbers');
         }
     }
 
-    /**
-     * @param $accountNumber
-     *
-     * @throws InvalidArgumentException
-     */
-    private static function validateAccountNumberFormat($accountNumber)
+    /** @throws InvalidArgumentException */
+    private static function validateAccountNumberFormat(string $accountNumber): void
     {
-        if (! preg_match('/^[\d]{10}$/', $accountNumber)) {
+        if (!preg_match('/^[\d]{10}$/', $accountNumber)) {
             throw new InvalidArgumentException('Account number should be 10 numbers');
         }
     }
 
-    /**
-     * @param $bankCode
-     * @param $branchCode
-     * @param $checkDigits
-     * @param $accountNumber
-     *
-     * @throws InvalidArgumentException
-     */
+    /** @throws InvalidArgumentException */
     private static function validateControlDigit(
-        $bankCode,
-        $branchCode,
-        $checkDigits,
-        $accountNumber
-    ) {
+        string $bankCode,
+        string $branchCode,
+        string $checkDigits,
+        string $accountNumber
+    ): void {
         $dc = '';
         $validations = [6, 3, 7, 9, 10, 5, 8, 4, 2, 1];
         foreach ([$bankCode . $branchCode, $accountNumber] as $string) {

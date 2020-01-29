@@ -1,42 +1,29 @@
 <?php
 
+declare(strict_types=1);
+
 namespace IbanGenerator\Bban;
 
+use IbanGenerator\Bban\Exception\MethodNotSupportedException;
 use InvalidArgumentException;
 
 interface BbanInterface
 {
-    /**
-     * @param string $bban
-     *
-     * @throws InvalidArgumentException
-     *
-     * @return static
-     */
-    public static function fromString($bban);
+    /** @throws InvalidArgumentException */
+    public static function fromString(string $bban): self;
 
-    /**
-     * @return string
-     */
-    public function bankCode();
+    public function bankCode(): string;
 
-    /**
-     * @return string
-     */
-    public function branchCode();
+    public function accountNumber(): string;
 
-    /**
-     * @return string
-     */
-    public function checkDigits();
+    /** @throws MethodNotSupportedException */
+    public function branchCode(): string;
 
-    /**
-     * @return string
-     */
-    public function accountNumber();
+    /** @throws MethodNotSupportedException */
+    public function checkDigits(): string;
 
-    /**
-     * @return string
-     */
-    public function __toString();
+    /** @throws MethodNotSupportedException */
+    public function accountType(): string;
+
+    public function __toString(): string;
 }
