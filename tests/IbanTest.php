@@ -96,7 +96,7 @@ class IbanTest extends TestCase
             $bankAccount
         );
 
-        $iban = Iban::fromBbanAndCountry($bban, 'ES');
+        $iban = Iban::fromBbanAndCountry($bban, strtoupper($countryCode));
         $this->assertEquals($ibanChecksum, $iban->ibanCheckDigits());
     }
 
@@ -248,6 +248,7 @@ class IbanTest extends TestCase
         return [
             ['ES', '00', '3841', '2436', '11', '6183191503'],
             ['ES', '89', '0989', '5990', '44', '6462241825'],
+            ['DE', '03', '50010517', '', '', '9367994767'],
         ];
     }
 
@@ -269,6 +270,7 @@ class IbanTest extends TestCase
             ['ES', '57', '2100', '3063', '99', '2200110010'],
             ['ES', '53', '1491', '0001', '28', '1008158220'],
             ['ES', '27', '2095', '0264', '60', '9105878176'],
+            ['DE', '02', '50010517', '', '', '9367994767'],
         ];
     }
 
@@ -302,6 +304,9 @@ class IbanTest extends TestCase
      *
      * @return BbanInterface
      */
+    // CHAAAANGE utilitzar:
+    // utilitzar Iban::fromString(aqui tot l'iban)
+    //private function prophesizeBban($stringIban)
     private function prophesizeBban(
         $bankCode,
         $branchCode,
@@ -314,6 +319,7 @@ class IbanTest extends TestCase
         $bban = $this->prophesize('IbanGenerator\Bban\BbanInterface');
         $bban->bankCode()->willReturn($bankCode);
         $bban->branchCode()->willReturn($branchCode);
+        // check digits és el checksum o els control digits del bank espanyol?
         $bban->checkDigits()->willReturn($controlDigits);
         $bban->accountNumber()->willReturn($bankAccount);
         $bban->__toString()
